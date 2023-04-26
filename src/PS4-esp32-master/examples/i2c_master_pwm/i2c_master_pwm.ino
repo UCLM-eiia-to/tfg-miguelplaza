@@ -1,11 +1,3 @@
-/*
-  I2C Master Control Demo
-  i2c-master-demo-control.ino
-  Demonstrate use of I2C bus
-  Master sends potentimeter position data
-  DroneBot Workshop 2019
-  https://dronebotworkshop.com
-*/
 
 // Include Arduino Wire library for I2C
 #include <Wire.h>

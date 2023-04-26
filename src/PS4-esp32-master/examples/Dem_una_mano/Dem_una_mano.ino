@@ -51,7 +51,7 @@ void loop()
 
         MotorSpeed = map( PS4.RStickY(), -127, 127, -8, 8);
         MotorSpeed = constrain(MotorSpeed, -8, 8);
-        rotateMotor(MotorSpe+ed);
+        rotateMotor(MotorSpeed);
         break;
 
       case HIGH:
