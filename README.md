@@ -18,13 +18,7 @@ Con base en este contexto, se propone una solución innovadora que permita adapt
 
 ## Estructura del Repositorio
 
-- **`/librerias`:** En esta carpeta se encuentran las bibliotecas externas utilizadas en el proyecto.
-- **`/codigo`:** Esta carpeta contiene el código fuente del proyecto, que incluye los archivos necesarios para la adaptación del mando de PS4.
-- **`/documentacion`:** Aquí se encuentran los documentos y recursos relacionados con el proyecto, como manuales de uso y guías de adaptación.
+- **`/lib`:** En esta carpeta se encuentran las bibliotecas externas utilizadas en el proyecto.
+- **`/src`:** Esta carpeta contiene el código fuente del proyecto, que incluye los archivos necesarios para la adaptación del mando de PS4.
 - **`/imagenes`:** Esta carpeta alberga las imágenes utilizadas en la documentación del proyecto, como capturas de pantalla y diagramas.
 
-## Contribuciones y Colaboración
-
-Se anima a la comunidad a contribuir al proyecto mediante la apertura de issues para informar sobre problemas o sugerir mejoras. También se aceptan pull requests para agregar nuevas funcionalidades, corregir errores o realizar cualquier otro tipo de contribución que ayude a mejorar la solución.
-
-¡Gracias por tu interés en este proyecto! Esperamos que esta iniciativa contribuya a hacer que los videojuegos sean más inclusivos y accesibles para todas las personas, sin importar sus habilidades motoras.
