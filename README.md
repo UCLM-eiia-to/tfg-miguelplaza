@@ -18,5 +18,5 @@ Para abordar este desafío, se ha utilizado microcontroladores programables que 
 
 - **`/lib`:** En esta carpeta se encuentran las bibliotecas externas utilizadas en el proyecto.
 - **`/src`:** Esta carpeta contiene el código fuente del proyecto, que incluye los archivos necesarios para la adaptación del mando de PS4.
-- **`/imagenes`:** Esta carpeta alberga las imágenes utilizadas en la documentación del proyecto, como capturas de pantalla y diagramas.
+- **`/imagenes`:** Esta carpeta alberga las imágenes utilizadas para poner en contexto y visualizar la maqueta del proyecto.
 
