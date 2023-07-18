@@ -1,4 +1,4 @@
-// Include Arduino Wire library for I2C
+// Inclusión de las librerias utilizadas
 #include <Wire.h>
 #include <PS4Controller.h>
 
@@ -7,10 +7,10 @@
 #include "esp_gap_bt_api.h"
 #include "esp_err.h"
 
-// Define Slave I2C Address
+// Definición de la dirección del esclavo del protocolo I2C
 #define SLAVE_ADDR 9
 
-// Integer to hold potentiometer value
+// Definición de las variables, incluyendo los botones que se utilizarán
 int Square = 0;
 int Cross = 0;
 int Circle = 0;
@@ -47,14 +47,16 @@ int Side_button = 27;
 
 void setup() {
 
-  // Initialize I2C communications as Master
+  // Iniciar la comunicación I2C como maestro
   Wire.begin();
 
   Serial.begin(115200);
 
+  // Mac address utilizada en la conexión del mando
   // PS4.begin("28:66:e3:3b:75:ea");
   PS4.begin("28:66:e3:3b:75:ea");
 
+  // Limpiar de dispositivos conectados anteriormente para evitar problemas de conexión
   uint8_t pairedDeviceBtAddr[20][6];
   int count = esp_bt_gap_get_bond_device_num();
   esp_bt_gap_get_bond_device_list(&count, pairedDeviceBtAddr);
@@ -64,8 +66,10 @@ void setup() {
   }
 
   Serial.println("Ready.");
+  // Fijar la velocidad de conexión del I2C
   Wire.setClock(100000);
 
+  // Definición de los modos de los pines a los que se conectan las entradas físicas
   pinMode(Enable_button, INPUT_PULLUP);
   pinMode(Side_button, INPUT_PULLUP);
 }
@@ -73,6 +77,7 @@ void setup() {
 void loop() {
   if (PS4.isConnected())
   {
+    // Lectura de las entradas físicas
     int Enable_value = digitalRead(Enable_button);
     int Side_value = digitalRead(Side_button);
 
@@ -86,6 +91,7 @@ void loop() {
     }
 
     delay(25);
+    // Lectura de los valores de los botones del mando
     Cross = PS4.Cross();
     Circle = PS4.Circle();
     Triangle = PS4.Triangle();
@@ -110,12 +116,13 @@ void loop() {
     LXStick = PS4.LStickX();
     LYStick = PS4.LStickY();
 
+    // Ajuste de los valores de los joystick a los adecuados
     leftxJoystickValue = map(LXStick, -128, 128, 0, 255);
     leftyJoystickValue = map(LYStick, -128, 128, 0, 255);
     rightxJoystickValue = map(RXStick, -128, 128, 0, 255);
     rightyJoystickValue = map(RYStick, -128, 128, 0, 255);
 
-    // Write a charatre to the Slave
+    // Escritura de los valores al ESP32 esclavo
     Wire.beginTransmission(SLAVE_ADDR);
     Wire.write(Cross);
     Wire.write(Circle);
@@ -157,6 +164,7 @@ void loop() {
     Wire.write(Side);
     Wire.write(Enable);
 
+    // Fin de la transmisión por I2C
     Wire.endTransmission();
   }
 
