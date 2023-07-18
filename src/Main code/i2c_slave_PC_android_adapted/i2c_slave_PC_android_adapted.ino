@@ -8,18 +8,19 @@
   Select=9, Start=10, L3=11, R3=12, PS=13}
 
 */
-// Include Arduino Wire library for I2C
+// Inclusión de las librerías a utilizar
 #include <Wire.h>
 
 #include <Arduino.h>
 #include <BleGamepad.h>
 
+// Definición del tamaño de los botones que se pueden presionar
 #define NUM_BUTTONS 14
 
-// Define Slave I2C Address
+// Definición de la dircción del esclavo en el protocolo I2C
 #define SLAVE_ADDR 9
 
-//There is not buttons for Y and Z
+// Valores correspondientes a los botones, colocados en orden de llegada desde el maestro
 int androidGamepadButtons[NUM_BUTTONS] = {2, 3, 4, 1, 6, 8, 5, 7, 10, 9, 13, 12, 11, 14};
 int rightGamepadButtons[NUM_BUTTONS] = {2, 3, 4, 1, 6, 8, 0, 0, 10, 0, 13, 12, 0, 14};
 int leftGamepadButtons[NUM_BUTTONS] = {0, 0, 0, 0, 5, 7, 0, 0, 9, 0, 13, 11, 0, 14};
@@ -44,6 +45,8 @@ int leftGamepadButtons[NUM_BUTTONS] = {0, 0, 0, 0, 5, 7, 0, 0, 9, 0, 13, 11, 0, 
   int L3 = 0;
   int TouchPad = 0;
 */
+
+// Definición de las variables a utilizar
 int RXStick = 0;
 int RYStick = 0;
 int LXStick = 0;
@@ -62,16 +65,19 @@ int LED_enb = 27;
 int LED_right = 25;
 int LED_left = 26;
 
-BleGamepad bleGamepad("Mike Gamepad", "Mike Home");
+// Definición del mando a simular
+BleGamepad bleGamepad("ESP32 Gamepad", "UCLM_FabricaDeJueguetes");
 BleGamepadConfiguration bleGamepadConfig;
 
+// Definición del tamaño del envío de los datos
 byte Data[24];
 
+// Variable para conocer cual es el tiempo de ejecución del programa
 unsigned long startTime;
 /////////////////////////////////////////////////////////////////////////////
 void setup() {
 
-
+  // Configuración del la simulación del mando
   bleGamepadConfig.setAutoReport(false);
   bleGamepadConfig.setControllerType(CONTROLLER_TYPE_GAMEPAD); // CONTROLLER_TYPE_JOYSTICK, CONTROLLER_TYPE_GAMEPAD (DEFAULT), CONTROLLER_TYPE_MULTI_AXIS
   bleGamepadConfig.setVid(0xe502);
@@ -79,21 +85,22 @@ void setup() {
   bleGamepadConfig.setHatSwitchCount(4);
   bleGamepad.begin(&bleGamepadConfig);
 
-  // Initialize I2C communications as Slave
+  // Inicializar la comunicación I2C como esclavo
   Wire.begin(SLAVE_ADDR);
 
-  // Function to run when data received from master
+  // Función a ejecutar cuando se reciba información desde el maestro
   Wire.onReceive(receiveEvent);
 
-  // Setup Serial Monitor
   Serial.begin(115200);
   Serial.println("I2C Slave Demonstration");
 
+  // Establecer las salidas que ocuparán los LEDs
   pinMode(LED_enb, OUTPUT);
   pinMode(LED_right, OUTPUT);
   pinMode(LED_left, OUTPUT);
 }
 
+// Función para guardar los datos en la variable "Data" según se reciban desde el maestro
 void receiveEvent(int len) {
   for (int i = 0; i < len; i++)
   {
@@ -104,27 +111,31 @@ void receiveEvent(int len) {
 ///////////////////////////////////////////////////////////////
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  
   delay(50);
 
   if (bleGamepad.isConnected()) {
+    
+    // Empieza a contar el tiempo que se va a cronometrar
     startTime = millis();
 
+    // Lectura de las variables de control
     int Side = Data[22];
     int Enable = Data[23];
 
-    //Joysticks lecture
+    // Lectura de los joysticks
     LXStick = Data[18];
     LYStick = Data[19];
     RXStick = Data[20];
     RYStick = Data[21];
 
+    // Se ajusta el rango de los datos para que sea el correcto
     leftxJoystickValue = map(LXStick, 0, 255, 0, 32737);
     leftyJoystickValue = map(LYStick, 0, 255, 32737, 0);
     rightxJoystickValue = map(RXStick, 0, 255, 0, 32737);
     rightyJoystickValue = map(RYStick, 0, 255, 32737, 0);
     switch (Enable) {
-      case 0: ///////////////////////////// Adaptation disabled
+      case 0: ///////////////////////////// Adaptación deshabilitada
         digitalWrite(LED_enb, LOW);
         digitalWrite(LED_right, LOW);
         digitalWrite(LED_left, LOW);
@@ -153,9 +164,9 @@ void loop() {
         break;
 
 
-      case 1: ///////////////////////// Adaptation enabled
+      case 1: ///////////////////////// Adaptación habilitada
         digitalWrite(LED_enb, HIGH);
-        if (Side == 0) {   //////////////////Left side working
+        if (Side == 0) {   ////////////////// Lado izquierdo en funcionamiento 
           digitalWrite(LED_left, HIGH);
           digitalWrite(LED_right, LOW);
 
@@ -187,7 +198,7 @@ void loop() {
 
 
 
-        if (Side == 1) {   ////////////////////////////Right side working
+        if (Side == 1) {   ////////////////////////////Lado derecho en funcionamiento
           digitalWrite(LED_right, HIGH);
           digitalWrite(LED_left, LOW);
           for (int i = 0; i < NUM_BUTTONS; i++) {
@@ -210,6 +221,7 @@ void loop() {
 
     bleGamepad.setHat4();
 
+    // Termina de contar el tiempo de ejecución 
     unsigned long endTime = millis(); // Guarda el tiempo actual como tiempo de finalización
     unsigned long elapsedTime = endTime - startTime; // Calcula el tiempo transcurrido
     Serial.print("elapsed Time ");
